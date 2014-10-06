@@ -1,0 +1,4 @@
+banana 1
+apple 4
+kiwi 0
+
