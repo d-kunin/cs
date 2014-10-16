@@ -26,37 +26,35 @@ namespace alg {
     void setAndIncrementPos(vector<T> & out, vector<T> const & src, size_t outPos, size_t & srcPos);
     
     template <typename T>
-    void mergeSort(vector<T> & out, vector<T> const & input);
+    vector<T> mergeSort(vector<T> & vec);
     
     template <typename T>
-    void merge(vector<T> & out, vector<T> const & left, vector<T> const & right);
+    vector<T> merge(vector<T> const & left, vector<T> const & right);
     
     template <typename T>
-    void mergeSort(vector<T> & out, vector<T> const & input) {
-        if (input.size() < 2) {
-            out.resize(input.size());
-            out.assign(input.begin(), input.end());
+    vector<T> mergeSort(vector<T> & vec) {
+        if (vec.size() < 2) {
+            return vec;
         } else {
-            size_t mid = input.size()/2;
+            typename vector<T>::iterator mid = vec.begin() + (vec.size()/2);
             
-            vector<T> left(input.begin(), input.begin() + mid);
-            vector<T> lOut;
-            mergeSort(lOut, left);
+            vector<T> left(vec.begin(), mid);
+            left = mergeSort(left);
             
-            
-            vector<T> rOut;
-            vector<T> right(input.begin() + mid, input.end());
-            mergeSort(rOut, right);
+            vector<T> right(mid, vec.end());
+            right = mergeSort(right);
 
-            merge(out, lOut, rOut);
+            return merge(left, right);
         }
     }
 
     template <typename T>
-    void merge(vector<T> & out, vector<T> const & left, vector<T> const & right) {
+    vector<T> merge(vector<T> const & left, vector<T> const & right) {
         size_t lSize = left.size();
         size_t rSize = right.size();
         size_t total = lSize + rSize;
+        
+        vector<T> out;
         out.resize(total);
         
         size_t lPos = 0;
@@ -77,6 +75,7 @@ namespace alg {
                 setAndIncrementPos(out, right, i, rPos);
             }
         }
+        return out;
     }
     
     template <typename T>

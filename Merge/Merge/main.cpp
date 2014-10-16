@@ -29,13 +29,13 @@ int main(int argc, const char * argv[]) {
     // sort it
     cout << "v1 as is:  ";
     printVector(v1);
-    alg::mergeSort(out, v1);
+    out = alg::mergeSort(v1);
     cout << "v1 sorted: ";
     printVector(out);
     
     cout << "v2 as is:  ";
     printVector(v2);
-    alg::mergeSort(out, v2);
+    out = alg::mergeSort(v2);
     cout << "v2 sorted: ";
     printVector(out);
     
