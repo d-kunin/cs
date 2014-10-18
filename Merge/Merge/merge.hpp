@@ -22,6 +22,8 @@ void printVector(vector<T> const & v) {
 
 namespace alg {
     
+    // Definitions
+    
     template <typename T>
     void setAndIncrementPos(vector<T> & out, vector<T> const & src, size_t outPos, size_t & srcPos);
     
@@ -30,6 +32,14 @@ namespace alg {
     
     template <typename T>
     vector<T> merge(vector<T> const & left, vector<T> const & right);
+    
+    template <typename T>
+    vector<T> sortAndCountInv(vector<T> & vec, int & inv);
+    
+    template <typename T>
+    vector<T> mergeAndCountSplitInv(vector<T> const & left, vector<T> const & right, int & inv);
+    
+    // Impl
     
     template <typename T>
     vector<T> mergeSort(vector<T> & vec) {
@@ -66,6 +76,70 @@ namespace alg {
                 if (left[lPos] < right[rPos]) {
                     setAndIncrementPos(out, left, i, lPos);
                 } else {
+                    setAndIncrementPos(out, right, i, rPos);
+                }
+                
+            } else if (lPos < lSize) {
+                setAndIncrementPos(out, left, i, lPos);
+            } else {
+                setAndIncrementPos(out, right, i, rPos);
+            }
+        }
+        return out;
+    }
+    
+    template <typename T>
+    vector<T> _sortAndCountInv(vector<T> & vec, int & inv) {
+        if (vec.size() < 2) {
+            inv = 0;
+            return vec;
+        }
+        typename vector<T>::iterator mid = vec.begin() + vec.size()/2;
+        
+        int invLeft = 0;
+        vector<T> left(vec.begin(), mid);
+        auto leftSorted = _sortAndCountInv(left, invLeft);
+        
+        int invRight = 0;
+        vector<T> right(mid, vec.end());
+        auto rightSorted = _sortAndCountInv(right, invRight);
+        
+        int splitInv = 0;
+        auto merged = mergeAndCountSplitInv(leftSorted, rightSorted, splitInv);
+        
+        inv = invLeft + invRight + splitInv;
+        return merged;
+    }
+    
+    template <typename T>
+    vector<T> sortAndCountInv(vector<T> & vec, int & inv) {
+        inv = 0;
+        return _sortAndCountInv(vec, inv);
+    }
+    
+    template <typename T>
+    vector<T> mergeAndCountSplitInv(vector<T> const & left, vector<T> const & right, int & inv) {
+        size_t lSize = left.size();
+        size_t rSize = right.size();
+        size_t total = lSize + rSize;
+        
+        vector<T> out;
+        out.resize(total);
+        
+        size_t lPos = 0;
+        size_t rPos = 0;
+        inv = 0;
+        for (size_t i = 0; i < total; ++i) {
+            
+            if (lPos < lSize && rPos < rSize) {
+                /* have items in both parts */
+                
+                
+                if (left[lPos] < right[rPos]) {
+                    setAndIncrementPos(out, left, i, lPos);
+                } else {
+                    // here we should count inversions
+                    inv += lSize - lPos;
                     setAndIncrementPos(out, right, i, rPos);
                 }
                 

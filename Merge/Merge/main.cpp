@@ -20,8 +20,7 @@ void printVector(vector<int> const & v) {
     cout << endl;
 }
 
-int main(int argc, const char * argv[]) {
-    
+void mergeSortTest() {
     vector<int> v1 {9, 4, 5, 6, 8, 7, 1, 44, 66, 423};
     vector<int> v2 {3, 2, 5, 1, 4};
     vector<int> out;
@@ -38,6 +37,25 @@ int main(int argc, const char * argv[]) {
     out = alg::mergeSort(v2);
     cout << "v2 sorted: ";
     printVector(out);
+}
+
+void countInvTest() {
+    vector<int> v {6,5,4,3,2,1};
+    int invs = 0;
+    alg::sortAndCountInv(v, invs);
+    printVector(v);
+    cout << "num invs: " << invs << endl;
+    
+    vector<int> v2 {4,1,5,2,6,3};
+    alg::sortAndCountInv(v2, invs);
+    printVector(v2);
+    cout << "num invs: " << invs << endl;
+}
+
+int main(int argc, const char * argv[]) {
+    
+//    mergeSortTest();
+    countInvTest();
     
     return 0;
 }
