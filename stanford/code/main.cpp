@@ -30,6 +30,8 @@ int p2()
 
     alg::quicksort(testvec, 0, testvec.size() - 1);
     coding::printVector(testvec);
+
+    return 0;
 }
 
 int main()

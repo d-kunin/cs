@@ -51,12 +51,16 @@ namespace alg
     }
 
     template <typename T>
-    void quicksort(vector<T> & vec, size_t left, size_t right)
+    void quicksort(
+            vector<T> & vec,
+            size_t left,
+            size_t right,
+            size_t (*choosePivotFunc)(vector<T>&, size_t, size_t) = &chooseLeft)
     {
         size_t vec_size = right - left + 1;
         if (vec_size < 2) return;
 
-        size_t pivotIndex = partition(vec, left, right);
+        size_t pivotIndex = partition(vec, left, right, choosePivotFunc);
 
         quicksort(vec, left, pivotIndex - 1);
         quicksort(vec, pivotIndex + 1, right);
