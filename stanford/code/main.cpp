@@ -36,7 +36,8 @@ int p2()
             {
                     "10.txt",
                     "100.txt",
-                    "1000.txt"
+                    "1000.txt",
+                    "QuickSort.txt"
             };
 
     for (auto filename : filenames)

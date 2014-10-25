@@ -18,8 +18,6 @@ namespace alg
     template <typename T>
     size_t chooseRight(vector<T> & vec, size_t left, size_t right)
     {
-        T pivot = vec[right];
-//        swap(vec[right], vec[left]);
         return right;
     }
 
@@ -28,28 +26,18 @@ namespace alg
     {
         T begin = vec[left];
         T end   = vec[right];
-        size_t midIndex = vec.size()/2 - 1;
+        // this must be middle of the segment!!!
+        size_t midIndex = (right + left)/2;
         T mid   = vec[midIndex];
 
-        T median = max(min(begin,end), min(max(begin,end),mid));
+        T midValue = max(min(begin,end), min(max(begin,end),mid));
 
-//        // always place median as first value in array
-        if (median == end)
-        {
-//            swap(vec[right], vec[left]);
-            return right;
-        }
-        else if (median == mid)
-        {
-//            swap(vec[midIndex], vec[left]);
-            return midIndex;
-        }
-        else
-        {
+        if (midValue == begin)
             return left;
-        }
-
-//        return median;
+        else if (midValue == mid)
+            return midIndex;
+        else
+            return right;
     }
 
     template <typename T>
