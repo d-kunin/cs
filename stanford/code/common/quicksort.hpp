@@ -18,14 +18,32 @@ namespace alg
     template <typename T>
     size_t chooseRight(vector<T> & vec, size_t left, size_t right)
     {
-        return vec[right];
+        T pivot = vec[right];
+        swap(vec[right], vec[left]);
+        return pivot;
     }
 
     template <typename T>
     size_t chooseMedianOfThree(vector<T> & vec, size_t left, size_t right)
     {
-        // TODO
-        return vec[left];
+        T begin = vec[left];
+        T end   = vec[right];
+        size_t midIndex = vec.size()/2 - 1;
+        T mid   = vec[midIndex];
+
+        T median = max(min(begin,end), min(max(begin,end),mid));
+
+        // always place median as first value in array
+        if (median == end)
+        {
+            swap(vec[right], vec[left]);
+        }
+        else if (median == mid)
+        {
+            swap(vec[midIndex], vec[left]);
+        }
+
+        return median;
     }
 
     template <typename T>
@@ -36,8 +54,8 @@ namespace alg
             size_t (*choosePivotFunc)(vector<T>&, size_t, size_t) = &chooseLeft)
     {
         T pivot = choosePivotFunc(vec, left, right);
-
         size_t border = left + 1;
+
         for (size_t j = left + 1; j <= right; ++j)
         {
             if (vec[j] < pivot)

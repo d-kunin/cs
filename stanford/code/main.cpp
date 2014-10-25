@@ -23,13 +23,21 @@ int p1()
 
 int p2()
 {
-    vector<int> testvec {4, 1, 2, 5, 1, 6, 7, 1, 0, 1};
-    size_t pivot_index = alg::partition(testvec, 0, testvec.size() - 1);
-    coding::printVector(testvec);
-    cout << pivot_index << endl;
+    typedef  size_t(*pivotChooser)(vector<int>&, size_t, size_t);
 
-    alg::quicksort(testvec, 0, testvec.size() - 1);
-    coding::printVector(testvec);
+    pivotChooser choosers[] =
+            {
+              alg::chooseLeft,
+              alg::chooseRight,
+              alg::chooseMedianOfThree
+            };
+
+    for (auto fun : choosers) {
+        vector<int> testvec{4, 1, 2, 5, 1, 6, 7, 1, 0, 1};
+        alg::quicksort(testvec, 0, testvec.size() - 1, fun);
+        coding::printVector(testvec);
+    }
+
 
     return 0;
 }
