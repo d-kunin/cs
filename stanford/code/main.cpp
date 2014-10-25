@@ -51,9 +51,7 @@ int p2()
 
 
             cout << numComp << " " << testvec.size() << " : ";
-            coding::printVector(vector<int>(testvec.begin(), testvec.begin() + 10));
-            cout << "... ";
-            coding::printVector(vector<int>(testvec.end() - 10, testvec.end()));
+            coding::printVector(testvec, 16);
             cout << endl;
         }
         cout << endl;

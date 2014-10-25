@@ -11,10 +11,27 @@ using namespace std;
 namespace coding
 {
     template <typename T>
-    void printVector(vector<T> const & v) {
-        for (auto elem : v) {
-            std::cout << elem << " ";
+    void printVector(vector<T> const & v, size_t maxLength=20) {
+        bool ellipsize = maxLength < v.size();
+
+        if (!ellipsize) {
+            for (auto elem : v) {
+                std::cout << elem << " ";
+            }
+        } else {
+            size_t part = maxLength/2;
+            typedef typename vector<T>::const_iterator iter;
+            for (iter it = v.begin(); it != (v.begin() + part); ++it)
+            {
+                std::cout << *it << " ";
+            }
+            std::cout << "... ";
+            for (iter it = (v.end() - part); it != v.end(); ++it)
+            {
+                std::cout << *it << " ";
+            }
         }
+
     }
 
 
