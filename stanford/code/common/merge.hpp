@@ -34,10 +34,10 @@ namespace alg {
     vector<T> merge(vector<T> const & left, vector<T> const & right);
     
     template <typename T>
-    vector<T> sortAndCountInv(vector<T> & vec, int & inv);
+    vector<T> sortAndCountInv(vector<T> & vec, size_t & inv);
     
     template <typename T>
-    vector<T> mergeAndCountSplitInv(vector<T> const & left, vector<T> const & right, int & inv);
+    vector<T> mergeAndCountSplitInv(vector<T> const & left, vector<T> const & right, size_t & inv);
     
     // Impl
     
@@ -89,22 +89,22 @@ namespace alg {
     }
     
     template <typename T>
-    vector<T> _sortAndCountInv(vector<T> & vec, int & inv) {
+    vector<T> _sortAndCountInv(vector<T> & vec, size_t & inv) {
         if (vec.size() < 2) {
             inv = 0;
             return vec;
         }
         typename vector<T>::iterator mid = vec.begin() + vec.size()/2;
         
-        int invLeft = 0;
+        size_t invLeft = 0;
         vector<T> left(vec.begin(), mid);
         auto leftSorted = _sortAndCountInv(left, invLeft);
         
-        int invRight = 0;
+        size_t invRight = 0;
         vector<T> right(mid, vec.end());
         auto rightSorted = _sortAndCountInv(right, invRight);
         
-        int splitInv = 0;
+        size_t splitInv = 0;
         auto merged = mergeAndCountSplitInv(leftSorted, rightSorted, splitInv);
         
         inv = invLeft + invRight + splitInv;
@@ -112,13 +112,13 @@ namespace alg {
     }
     
     template <typename T>
-    vector<T> sortAndCountInv(vector<T> & vec, int & inv) {
+    vector<T> sortAndCountInv(vector<T> & vec, size_t & inv) {
         inv = 0;
         return _sortAndCountInv(vec, inv);
     }
     
     template <typename T>
-    vector<T> mergeAndCountSplitInv(vector<T> const & left, vector<T> const & right, int & inv) {
+    vector<T> mergeAndCountSplitInv(vector<T> const & left, vector<T> const & right, size_t & inv) {
         size_t lSize = left.size();
         size_t rSize = right.size();
         size_t total = lSize + rSize;
