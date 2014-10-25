@@ -32,10 +32,30 @@ int p2()
               alg::chooseMedianOfThree
             };
 
-    for (auto fun : choosers) {
-        vector<int> testvec{4, 1, 2, 5, 1, 6, 7, 1, 0, 1};
-        alg::quicksort(testvec, 0, testvec.size() - 1, fun);
-        coding::printVector(testvec);
+    string filenames[] =
+            {
+                    "10.txt",
+                    "100.txt",
+                    "1000.txt"
+            };
+
+    for (auto filename : filenames)
+    {
+        for (auto fun : choosers)
+        {
+            vector<int> testvec;
+            coding::readVectorFromFile(filename, testvec);
+
+            size_t numComp = alg::quicksort(testvec, 0, testvec.size() - 1, fun);
+
+
+            cout << numComp << " " << testvec.size() << " : ";
+            coding::printVector(vector<int>(testvec.begin(), testvec.begin() + 10));
+            cout << "... ";
+            coding::printVector(vector<int>(testvec.end() - 10, testvec.end()));
+            cout << endl;
+        }
+        cout << endl;
     }
 
 

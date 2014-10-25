@@ -12,15 +12,15 @@ namespace alg
     template <typename T>
     size_t chooseLeft(vector<T> & vec, size_t left, size_t right)
     {
-        return vec[left];
+        return left;
     }
 
     template <typename T>
     size_t chooseRight(vector<T> & vec, size_t left, size_t right)
     {
         T pivot = vec[right];
-        swap(vec[right], vec[left]);
-        return pivot;
+//        swap(vec[right], vec[left]);
+        return right;
     }
 
     template <typename T>
@@ -33,17 +33,23 @@ namespace alg
 
         T median = max(min(begin,end), min(max(begin,end),mid));
 
-        // always place median as first value in array
+//        // always place median as first value in array
         if (median == end)
         {
-            swap(vec[right], vec[left]);
+//            swap(vec[right], vec[left]);
+            return right;
         }
         else if (median == mid)
         {
-            swap(vec[midIndex], vec[left]);
+//            swap(vec[midIndex], vec[left]);
+            return midIndex;
+        }
+        else
+        {
+            return left;
         }
 
-        return median;
+//        return median;
     }
 
     template <typename T>
@@ -53,9 +59,11 @@ namespace alg
             size_t right,
             size_t (*choosePivotFunc)(vector<T>&, size_t, size_t) = &chooseLeft)
     {
-        T pivot = choosePivotFunc(vec, left, right);
-        size_t border = left + 1;
+        size_t pivotIndex = choosePivotFunc(vec, left, right);
+        T pivot = vec[pivotIndex];
+        swap(vec[left], vec[pivotIndex]);
 
+        size_t border = left + 1;
         for (size_t j = left + 1; j <= right; ++j)
         {
             if (vec[j] < pivot)
@@ -69,19 +77,24 @@ namespace alg
     }
 
     template <typename T>
-    void quicksort(
+    size_t quicksort(
             vector<T> & vec,
             size_t left,
             size_t right,
             size_t (*choosePivotFunc)(vector<T>&, size_t, size_t) = &chooseLeft)
     {
         size_t vec_size = right - left + 1;
-        if (vec_size < 2) return;
+        if (vec_size < 2) return 0;
 
         size_t pivotIndex = partition(vec, left, right, choosePivotFunc);
 
-        quicksort(vec, left, pivotIndex - 1);
-        quicksort(vec, pivotIndex + 1, right);
+        size_t numComp = (pivotIndex - 1) - left + 1;
+        numComp += quicksort(vec, left, pivotIndex - 1, choosePivotFunc);
+
+        numComp += right - (pivotIndex + 1) + 1;
+        numComp += quicksort(vec, pivotIndex + 1, right, choosePivotFunc);
+
+        return numComp;
     }
 
 }

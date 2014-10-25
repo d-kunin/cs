@@ -15,7 +15,6 @@ namespace coding
         for (auto elem : v) {
             std::cout << elem << " ";
         }
-        std::cout << std::endl;
     }
 
 
