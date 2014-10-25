@@ -1,24 +1,8 @@
-//
-//  merge.hpp
-//  Merge
-//
-//  Created by Dzmitry Kunin on 16.10.14.
-//  Copyright (c) 2014 BSUIR. All rights reserved.
-//
-
 #pragma once
 
 #include <vector>
 
 using std::vector;
-
-template <typename T>
-void printVector(vector<T> const & v) {
-    for (auto i : v) {
-        std::cout << i << " ";
-    }
-    std::cout << std::endl;
-}
 
 namespace alg {
     
@@ -90,10 +74,12 @@ namespace alg {
     
     template <typename T>
     vector<T> _sortAndCountInv(vector<T> & vec, size_t & inv) {
+
         if (vec.size() < 2) {
             inv = 0;
             return vec;
         }
+
         typename vector<T>::iterator mid = vec.begin() + vec.size()/2;
         
         size_t invLeft = 0;

@@ -4,10 +4,16 @@ project(alg)
 set(SOURCE_FILES
     main.cpp
     common/merge.hpp
-    p1/IntegerArray.txt)
+    common/quicksort.hpp
+    common/coding.hpp)
 
 ADD_DEFINITIONS(
     -std=c++11
+    -Wall
 )
 
 add_executable(alg ${SOURCE_FILES})
+
+# Copy resources
+add_custom_command(TARGET alg PRE_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/data $<TARGET_FILE_DIR:alg>)
