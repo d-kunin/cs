@@ -53,4 +53,13 @@ namespace coding
 
         return false;
     }
+
+    template <typename T>
+    void shuffle_vector(vector<T> & v)
+    {
+        std::random_device rd;
+        std::mt19937 g(rd());
+        std::shuffle(v.begin(), v.end(), g);
+    }
+
 }

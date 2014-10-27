@@ -1,9 +1,12 @@
 #include <iostream>
 #include <vector>
+#include <random>
+#include <cstdio>
 
 #include "common/merge.hpp"
 #include "common/coding.hpp"
 #include "common/quicksort.hpp"
+#include "common/quickselect.hpp"
 
 using namespace std;
 
@@ -61,9 +64,33 @@ int p2()
     return 0;
 }
 
+int qselect()
+{
+    for (int i = 0; i < 10; ++i)
+    {
+
+        std::vector<int> v = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+        coding::shuffle_vector(v);
+        coding::printVector(v);
+
+        cout << endl;
+        for (int j = 0; j < 10; ++j)
+        {
+            int stat = alg::quickselect(v, j);
+            printf("{%d, %d} ", j, stat);
+        }
+        cout << endl;
+    }
+
+
+    return 0;
+}
+
 int main()
 {
 //    return p1();
-    return p2();
+//    return p2();
+    return qselect();
 }
 
