@@ -66,7 +66,7 @@ int p2()
 
 int qselect()
 {
-    for (int i = 0; i < 10; ++i)
+    for (size_t i = 0; i < 10; ++i)
     {
 
         std::vector<int> v = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
@@ -75,12 +75,24 @@ int qselect()
         coding::printVector(v);
 
         cout << endl;
-        for (int j = 0; j < 10; ++j)
+        for (size_t j = 0; j < 10; ++j)
         {
             int stat = alg::quickselect(v, j);
             printf("{%d, %d} ", j, stat);
         }
         cout << endl;
+    }
+
+    vector<int> v;
+
+    try
+    {
+        alg::quickselect(v, 0);
+        alg::quickselect(v, 1);
+    }
+    catch (std::exception const & e)
+    {
+        cout << "ERROR: " << e.what() << endl;
     }
 
 

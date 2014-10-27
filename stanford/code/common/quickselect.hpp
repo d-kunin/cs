@@ -2,6 +2,7 @@
 
 
 #include <vector>
+#include <stdexcept>
 #include "quicksort.hpp"
 
 namespace alg
@@ -9,23 +10,28 @@ namespace alg
     template <typename T>
     T quickselect(vector<T> vec, size_t kth)
     {
-        auto left = 0;
-        auto right = vec.size() - 1;
-        while (left < right) {
+        size_t left = 0;
+        size_t right = vec.size() - 1;
+
+        if (kth >= vec.size())
+            throw std::range_error("Unsupported kth");
+
+        for (;;)
+        {
             size_t pivotIndex = partition(vec, left, right);
-            if (pivotIndex < kth) {
+
+            if (pivotIndex == kth) {
+                return vec[pivotIndex];
+            }
+            else if (pivotIndex < kth)
+            {
                 left = pivotIndex + 1;
             }
-            else if (pivotIndex > kth)
+            else
             {
                 right = pivotIndex - 1;
             }
-            else {
-                return vec[kth];
-            }
         }
-        // TODO do I need this?
-        return vec[left];
     }
 
 }
