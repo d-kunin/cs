@@ -5,7 +5,8 @@ set(SOURCE_FILES
     main.cpp
     common/merge.hpp
     common/quicksort.hpp
-    common/coding.hpp)
+    common/coding.hpp
+    common/graph.hpp)
 
 ADD_DEFINITIONS(
     -std=c++11

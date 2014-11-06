@@ -1,12 +1,12 @@
 #include <iostream>
 #include <vector>
 #include <random>
-#include <cstdio>
 
 #include "common/merge.hpp"
 #include "common/coding.hpp"
 #include "common/quicksort.hpp"
 #include "common/quickselect.hpp"
+#include "common/graph.hpp"
 
 using namespace std;
 
@@ -78,7 +78,7 @@ int qselect()
         for (size_t j = 0; j < 10; ++j)
         {
             int stat = alg::quickselect(v, j);
-            printf("{%d, %d} ", j, stat);
+            printf("{%lu, %d} ", j, stat);
         }
         cout << endl;
     }
@@ -99,10 +99,49 @@ int qselect()
     return 0;
 }
 
+int p3()
+{
+    alg::Graph g(10);
+
+    cout << g.hasEdge(2, 1) << endl;
+
+    g.addEdge(1, 2);
+    g.addEdge(1, 3);
+        g.addEdge(2, 4);
+        g.addEdge(2, 5);
+        g.addEdge(3, 4);
+        g.addEdge(3, 6);
+            g.addEdge(5, 7);
+
+    cout << g.hasEdge(2, 1) << endl;
+    cout << g.hasEdge(1, 2) << endl;
+
+    alg::Graph::VertexVisitor  printer = [] (size_t v) {
+                                            cout << "{" << v << "}";
+                                            return true;
+                                        };
+
+    cout << endl;
+    g.bfs(printer);
+    cout << endl;
+
+    cout << endl;
+    g.dfs(printer);
+    cout << endl << endl;
+
+    g.removeEdge(1, 2);
+    cout << g.hasEdge(1, 2) << endl;
+    cout << g.hasEdge(2, 1) << endl;
+
+    return 0;
+}
+
+
 int main()
 {
 //    return p1();
 //    return p2();
-    return qselect();
+//    return qselect();
+    return p3();
 }
 
