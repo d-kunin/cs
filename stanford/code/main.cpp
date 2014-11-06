@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <random>
-#include <string>
+#include <set>
 #include <sstream>
 #include <fstream>
 
@@ -111,27 +111,85 @@ int qselect()
 
 int p3()
 {
-    alg::Graph g(200);
+    bool readFile = true;
+    size_t problemSize = readFile ? 200 : 4;
 
-//    p3_0(g);
-    string filename = "kargerMinCut.txt";
-    std::ifstream file(filename);
-    string line;
 
-    while (std::getline(file, line))
+    alg::Graph g(problemSize);
+
+    if (readFile)
     {
-        std::stringstream ss(line);
-        size_t v1;
-        ss >> v1;
-        while (ss)
-        {
+        string filename = "kargerMinCut.txt";
+//        string filename = "cut40_3.txt";
+        std::ifstream file(filename);
+        string line;
+
+        while (std::getline(file, line)) {
+            std::stringstream ss(line);
+
+            size_t v1;
+            ss >> v1;
+
             size_t v2;
-            ss >> v2;
-            g.addEdge(v1, v2);
+            while (ss >> v2) {
+                g.addEdge(v1, v2, false);
+            }
         }
+
+    }
+    else
+    {
+        g.addEdge(1, 2);
+        g.addEdge(1, 3);
+        g.addEdge(1, 4);
+        g.addEdge(4, 3);
+        g.addEdge(2, 3);
     }
 
-    g.bfs(printer);
+//    g.bfs(printer);
+
+
+    size_t repeat = problemSize << 16;
+    cout << endl << "Repeat: " << repeat << endl;
+    size_t minCut = (size_t)-1;
+
+    alg::Graph bk(g);
+
+    for (size_t r = 0; r < repeat; ++r)
+    {
+        g = bk;
+        vector<size_t> order;
+        for (size_t i = 1; i <= problemSize; ++i) {
+            order.push_back(i);
+        }
+        coding::shuffle_vector(order);
+
+
+        while (g.countConnectedVertices() > 2) {
+
+            size_t v1 = order.back();
+
+            vector<size_t> const & adjs = g.adjacentTo(v1);
+            size_t indx = coding::rand(adjs.size(), 1);
+            size_t v2 = 1 + adjs[indx];
+
+            g.merge(v1, v2);
+
+            order.erase(std::remove(order.begin(), order.end(), v2), order.end());
+            coding::shuffle_vector(order);
+        }
+
+        for (auto d : g.degrees()) {
+            if (d > 0) {
+                if (d < minCut) {
+                    minCut = d;
+                    cout << endl << "Min cut: " << minCut << endl;
+                }
+            }
+        }
+
+    }
+    cout << endl << "Min cut: " << minCut << endl;
 
     return 0;
 }

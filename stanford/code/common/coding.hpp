@@ -12,6 +12,13 @@ namespace coding
 {
     template <typename T>
     void printVector(vector<T> const & v, size_t maxLength=20) {
+        if (v.empty())
+        {
+            cout << "{empty} ";
+            return;
+        }
+
+
         bool ellipsize = maxLength < v.size();
 
         if (!ellipsize) {
@@ -61,5 +68,13 @@ namespace coding
         std::mt19937 g(rd());
         std::shuffle(v.begin(), v.end(), g);
     }
+
+    size_t rand(size_t max, size_t min = 0)
+    {
+        std::random_device rd;
+        std::default_random_engine e( rd() );
+        return (e() + min) % max;
+    }
+
 
 }

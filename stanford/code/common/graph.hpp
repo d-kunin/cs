@@ -5,10 +5,12 @@
 #include <stack>
 #include <set>
 #include <cassert>
+#include <iostream>
 
 using std::vector;
 using std::set;
 using std::queue;
+using std::endl;
 
 namespace alg
 {
@@ -23,11 +25,12 @@ namespace alg
         // Must return 'false' to stop traversal
         typedef bool (*VertexVisitor)(size_t);
 
-        Graph(size_t numVertices, size_t allowLoops = false);
+        Graph(size_t numVertices, size_t selfLoops = false);
 
-        void addEdge(size_t v1, size_t v2);
+        void addEdge(size_t v1, size_t v2, bool both=true);
         bool hasEdge(size_t v1, size_t v2);
         bool removeEdge(size_t v1, size_t v2);
+        void merge(size_t v1, size_t v2);
 
         // Traverse
         void bfs(VertexVisitor visitor);
@@ -35,19 +38,26 @@ namespace alg
 
 
         // Stat
-        size_t  numVertices();
+        size_t  countConnectedVertices();
+        vector<size_t> const & degrees() { return _degrees; }
+        vector<size_t> const & adjacentTo(size_t v)
+        {
+            assertIndex(v);
+            return _adjacencyList[toStoreIndex(v)];
+        }
         size_t  numEdges();
 
     // Impl
 
     private:
         vector< vector<size_t> > _adjacencyList;
-        size_t  const  _numVertices;
-        bool    const _allowLoops;
+        vector<size_t> _degrees;
+        size_t    _capacity;
+        bool      _selfLoops;
 
         bool checkIndex(size_t v)
         {
-            return v <= _numVertices && v > 0;
+            return v <= _capacity && v > 0;
         }
 
         void assertIndex(size_t v)
@@ -64,25 +74,28 @@ namespace alg
         {
             return v + 1;
         }
+
+        friend std::ostream & operator<<(std::ostream &os, const Graph& g);
     };
 
     //
 
 
 
-    Graph::Graph(size_t numVertices, size_t allowLoops)
-        : _numVertices(numVertices)
-        , _allowLoops(allowLoops)
+    Graph::Graph(size_t numVertices, size_t selfLoops)
+        : _capacity(numVertices)
+        , _selfLoops(selfLoops)
     {
-        _adjacencyList.resize(_numVertices);
+        _adjacencyList.resize(_capacity);
+        _degrees.resize(_capacity);
     }
 
-    void Graph::addEdge(size_t v1, size_t v2)
+    void Graph::addEdge(size_t v1, size_t v2, bool both)
     {
         assertIndex(v1);
         assertIndex(v2);
 
-        if (!_allowLoops && (v1 == v2))
+        if (!_selfLoops && (v1 == v2))
         {
             return;
         }
@@ -91,7 +104,13 @@ namespace alg
         v2 = toStoreIndex(v2);
 
         _adjacencyList[v1].push_back(v2);
-        _adjacencyList[v2].push_back(v1);
+        ++_degrees[v1];
+
+        if (both)
+        {
+            _adjacencyList[v2].push_back(v1);
+            ++_degrees[v2];
+        }
     }
 
     bool Graph::hasEdge(size_t v1, size_t v2)
@@ -128,6 +147,7 @@ namespace alg
             if (*it == v2)
             {
                 left.erase(it);
+                --_degrees[v2];
                 found = true;
                 break;
             }
@@ -139,6 +159,7 @@ namespace alg
             if (*it == v1)
             {
                 right.erase(it);
+                --_degrees[v1];
                 found = true;
                 break;
             }
@@ -153,7 +174,7 @@ namespace alg
         queue<size_t> q;
 
         // find any vertex to start
-        for (size_t i = 0; i < _numVertices; ++i)
+        for (size_t i = 0; i < _capacity; ++i)
         {
             if (!_adjacencyList[i].empty())
             {
@@ -187,7 +208,7 @@ namespace alg
         stack<size_t> s;
 
         // find any vertex to start
-        for (size_t i = 0; i < _numVertices; ++i)
+        for (size_t i = 0; i < _capacity; ++i)
         {
             if (!_adjacencyList[i].empty())
             {
@@ -212,6 +233,55 @@ namespace alg
             }
         }
 
+    }
+
+    void Graph::merge(size_t v1, size_t v2)
+    {
+        assertIndex(v1);
+        assertIndex(v2);
+
+        assert(hasEdge(v1, v2));
+
+        // this vertices must be moved to v1
+        vector<size_t> transfer(_adjacencyList[toStoreIndex(v2)]);
+
+        for (auto v : transfer)
+        {
+            v = toExtIndex(v);
+
+            removeEdge(v2, v);
+
+            if (v != v1)
+            {
+                addEdge(v1, v);
+            }
+        }
+
+        removeEdge(v1, v2);
+        removeEdge(v1, v1);
+        removeEdge(v2, v2);
+    }
+
+    size_t Graph::countConnectedVertices()
+    {
+        size_t count = 0;
+        for (auto deg : _degrees)
+        {
+            count += deg > 0 ? 1 : 0;
+        }
+        return count;
+    }
+
+    ostream & operator<<(ostream & os, Graph const & g)
+    {
+        for (vector<size_t> vtx : g._adjacencyList) {
+            os << endl;
+            for (size_t v : vtx)
+            {
+                os << v + 1 << " ";
+            }
+        }
+        return os;
     }
 
 
