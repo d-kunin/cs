@@ -1,6 +1,9 @@
 #include <iostream>
 #include <vector>
 #include <random>
+#include <string>
+#include <sstream>
+#include <fstream>
 
 #include "common/merge.hpp"
 #include "common/coding.hpp"
@@ -8,7 +11,14 @@
 #include "common/quickselect.hpp"
 #include "common/graph.hpp"
 
+void p3_0(alg::Graph & g);
+
 using namespace std;
+
+static alg::Graph::VertexVisitor  printer = [] (size_t v) {
+    cout << "{" << v << "}";
+    return true;
+};
 
 int p1()
 {
@@ -101,25 +111,44 @@ int qselect()
 
 int p3()
 {
-    alg::Graph g(10);
+    alg::Graph g(200);
 
+//    p3_0(g);
+    string filename = "kargerMinCut.txt";
+    std::ifstream file(filename);
+    string line;
+
+    while (std::getline(file, line))
+    {
+        std::stringstream ss(line);
+        size_t v1;
+        ss >> v1;
+        while (ss)
+        {
+            size_t v2;
+            ss >> v2;
+            g.addEdge(v1, v2);
+        }
+    }
+
+    g.bfs(printer);
+
+    return 0;
+}
+
+void p3_0(alg::Graph & g) {
     cout << g.hasEdge(2, 1) << endl;
 
     g.addEdge(1, 2);
     g.addEdge(1, 3);
-        g.addEdge(2, 4);
-        g.addEdge(2, 5);
-        g.addEdge(3, 4);
-        g.addEdge(3, 6);
-            g.addEdge(5, 7);
+    g.addEdge(2, 4);
+    g.addEdge(2, 5);
+    g.addEdge(3, 4);
+    g.addEdge(3, 6);
+    g.addEdge(5, 7);
 
     cout << g.hasEdge(2, 1) << endl;
     cout << g.hasEdge(1, 2) << endl;
-
-    alg::Graph::VertexVisitor  printer = [] (size_t v) {
-                                            cout << "{" << v << "}";
-                                            return true;
-                                        };
 
     cout << endl;
     g.bfs(printer);
@@ -132,8 +161,6 @@ int p3()
     g.removeEdge(1, 2);
     cout << g.hasEdge(1, 2) << endl;
     cout << g.hasEdge(2, 1) << endl;
-
-    return 0;
 }
 
 
