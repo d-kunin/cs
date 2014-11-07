@@ -15,8 +15,14 @@ void p3_0(alg::Graph & g);
 
 using namespace std;
 
-static alg::Graph::VertexVisitor  printer = [] (size_t v) {
+static alg::Graph::VertexVisitor  printer = [] (size_t v, vector<vector<size_t>> const & story) {
     cout << "{" << v << "}";
+    cout << "[";
+    for (auto pathElem : story[v - 1])
+    {
+        cout << pathElem << " ";
+    }
+    cout << "]" << endl;
     return true;
 };
 
@@ -154,7 +160,6 @@ int p3()
 }
 
 void p3_0(alg::Graph & g) {
-    cout << g.hasEdge(2, 1) << endl;
 
     g.addEdge(1, 2);
     g.addEdge(1, 3);
@@ -164,20 +169,8 @@ void p3_0(alg::Graph & g) {
     g.addEdge(3, 6);
     g.addEdge(5, 7);
 
-    cout << g.hasEdge(2, 1) << endl;
-    cout << g.hasEdge(1, 2) << endl;
 
-    cout << endl;
-    g.bfs(printer);
-    cout << endl;
-
-    cout << endl;
-    g.dfs(printer);
-    cout << endl << endl;
-
-    g.removeEdge(1, 2);
-    cout << g.hasEdge(1, 2) << endl;
-    cout << g.hasEdge(2, 1) << endl;
+    g.bfs(1, printer);
 }
 
 
@@ -186,6 +179,10 @@ int main()
 //    return p1();
 //    return p2();
 //    return qselect();
-    return p3();
+//    return p3();
+    alg::Graph g(10);
+    p3_0(g);
+
+    return 0;
 }
 

@@ -23,7 +23,7 @@ namespace alg
     public:
 
         // Must return 'false' to stop traversal
-        typedef bool (*VertexVisitor)(size_t);
+        typedef bool (*VertexVisitor)(size_t, vector<vector<size_t>> const & story);
 
         Graph(size_t numVertices, size_t selfLoops = false);
 
@@ -33,8 +33,8 @@ namespace alg
         void merge(size_t v1, size_t v2);
 
         // Traverse
-        void bfs(VertexVisitor visitor);
-        void dfs(VertexVisitor visitor);
+        void bfs(size_t v, VertexVisitor visitor);
+        void dfs(size_t v, VertexVisitor visitor);
 
 
         // Stat
@@ -68,12 +68,12 @@ namespace alg
             assert(checkIndex(v));
         }
 
-        size_t toStoreIndex(size_t v)
+        static size_t toStoreIndex(size_t v)
         {
             return v - 1;
         }
 
-        size_t toExtIndex(size_t v)
+        static size_t toExtIndex(size_t v)
         {
             return v + 1;
         }
@@ -171,44 +171,53 @@ namespace alg
         return found;
     }
 
-    void Graph::bfs(VertexVisitor visitor) {
+    void Graph::bfs(size_t v, VertexVisitor visitor) {
+
+        checkIndex(v);
+        v = toStoreIndex(v);
 
         set<size_t> visited;
         queue<size_t> q;
+        vector< vector<size_t> > paths;
+        paths.resize(_capacity);
+
+
+        visited.insert(v);
+        q.push(v);
 
         // find any vertex to start
-        for (size_t i = 0; i < _capacity; ++i)
-        {
-            if (!_adjacencyList[i].empty())
-            {
-                q.push(i);
-                visited.insert(i);
-                break;
-            }
-        }
 
         while (!q.empty())
         {
             size_t vertex = q.front();
             q.pop();
-            visitor(toExtIndex(vertex));
+
 
             for (auto v : _adjacencyList[vertex])
             {
                 if (visited.find(v) == visited.end())
                 {
-                    // not visited, so add
+                    // remember path
+                    paths[v].assign(paths[vertex].begin(), paths[vertex].end());
+                    paths[v].push_back(toExtIndex(vertex));
+
+                    // add to processing
                     q.push(v);
+
+                    // mark visited
                     visited.insert(v);
                 }
             }
+
+            visitor(toExtIndex(vertex), paths);
         }
     }
 
-    void Graph::dfs(VertexVisitor visitor) {
+    void Graph::dfs(size_t v, VertexVisitor visitor) {
 
         set<size_t> visited;
         stack<size_t> s;
+        vector<vector<size_t>> story;
 
         // find any vertex to start
         for (size_t i = 0; i < _capacity; ++i)
@@ -228,7 +237,7 @@ namespace alg
             if (visited.find(vertex) == visited.end())
             {
                 visited.insert(vertex);
-                visitor(toExtIndex(vertex));
+                visitor(toExtIndex(vertex), story);
                 for (auto v : _adjacencyList[vertex])
                 {
                     s.push(v);
