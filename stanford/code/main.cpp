@@ -112,15 +112,16 @@ int qselect()
 int p3()
 {
     bool readFile = true;
-    size_t problemSize = readFile ? 200 : 4;
+    size_t const fileInputSize = 200;
+    size_t const toyInputSize = 4;
 
+    size_t problemSize = readFile ? fileInputSize : toyInputSize;
 
     alg::Graph g(problemSize);
 
     if (readFile)
     {
         string filename = "kargerMinCut.txt";
-//        string filename = "cut40_3.txt";
         std::ifstream file(filename);
         string line;
 
@@ -146,51 +147,9 @@ int p3()
         g.addEdge(2, 3);
     }
 
-//    g.bfs(printer);
+    alg::Graph::KargerMinCut(g);
 
-
-    size_t repeat = problemSize << 16;
-    cout << endl << "Repeat: " << repeat << endl;
-    size_t minCut = (size_t)-1;
-
-    alg::Graph bk(g);
-
-    for (size_t r = 0; r < repeat; ++r)
-    {
-        g = bk;
-        vector<size_t> order;
-        for (size_t i = 1; i <= problemSize; ++i) {
-            order.push_back(i);
-        }
-        coding::shuffle_vector(order);
-
-
-        while (g.countConnectedVertices() > 2) {
-
-            size_t v1 = order.back();
-
-            vector<size_t> const & adjs = g.adjacentTo(v1);
-            size_t indx = coding::rand(adjs.size(), 1);
-            size_t v2 = 1 + adjs[indx];
-
-            g.merge(v1, v2);
-
-            order.erase(std::remove(order.begin(), order.end(), v2), order.end());
-            coding::shuffle_vector(order);
-        }
-
-        for (auto d : g.degrees()) {
-            if (d > 0) {
-                if (d < minCut) {
-                    minCut = d;
-                    cout << endl << "Min cut: " << minCut << endl;
-                }
-            }
-        }
-
-    }
-    cout << endl << "Min cut: " << minCut << endl;
-
+    cout << "Done!" << endl;
     return 0;
 }
 

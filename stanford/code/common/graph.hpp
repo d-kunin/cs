@@ -45,7 +45,10 @@ namespace alg
             assertIndex(v);
             return _adjacencyList[toStoreIndex(v)];
         }
-        size_t  numEdges();
+
+        // Intel
+        static size_t KargerMinCut(Graph const &input);
+
 
     // Impl
 
@@ -284,5 +287,43 @@ namespace alg
         return os;
     }
 
+    size_t Graph::KargerMinCut(Graph const &input)
+    {
+        Graph g(input);
+        Graph bk(input);
 
+        size_t problemSize = input._capacity;
+        size_t minCut = (size_t)-1;
+        size_t repeat = problemSize << 2;
+
+        fprintf(stderr, "Repeat %lu times\n", repeat);
+
+
+        for (size_t r = 0; r < repeat; ++r)
+        {
+            g = bk;
+            vector<size_t> order = coding::sequence<size_t>(1, problemSize + 1);
+
+
+            while (g.countConnectedVertices() > 2)
+            {
+                size_t v1 = coding::randomFrom(order);
+                size_t v2 = 1 + coding::randomFrom(g.adjacentTo(v1));
+
+                g.merge(v1, v2);
+
+                order.erase(std::remove(order.begin(), order.end(), v2), order.end());
+            }
+
+            for (auto d : g.degrees()) {
+                if (d > 0 && d < minCut) {
+                    minCut = d;
+                    fprintf(stderr, "Min cut=%lu\n", minCut);
+                    break;
+                }
+            }
+        }
+
+        return minCut;
+    }
 }
