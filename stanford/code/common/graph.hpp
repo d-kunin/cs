@@ -215,33 +215,38 @@ namespace alg
 
     void Graph::dfs(size_t v, VertexVisitor visitor) {
 
+        checkIndex(v);
+        v = toStoreIndex(v);
+
         set<size_t> visited;
         stack<size_t> s;
         vector<vector<size_t>> story;
+        story.resize(_capacity);
 
-        // find any vertex to start
-        for (size_t i = 0; i < _capacity; ++i)
-        {
-            if (!_adjacencyList[i].empty())
-            {
-                s.push(i);
-                break;
-            }
-        }
+        visited.insert(v);
+        s.push(v);
 
         while (!s.empty())
         {
             size_t vertex = s.top();
             s.pop();
 
-            if (visited.find(vertex) == visited.end())
+            for (auto v : _adjacencyList[vertex])
             {
-                visited.insert(vertex);
-                visitor(toExtIndex(vertex), story);
-                for (auto v : _adjacencyList[vertex])
+                if (visited.find(v) == visited.end())
                 {
+                    // copy path to prev node
+                    story[v].assign(story[vertex].begin(), story[vertex].end());
+                    story[v].push_back(toExtIndex(vertex));
+
+                    // add to processing stack
                     s.push(v);
                 }
+            }
+
+            if (visited.find(vertex) == visited.end()) {
+                visited.insert(vertex);
+                visitor(toExtIndex(vertex), story);
             }
         }
 

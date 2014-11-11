@@ -161,6 +161,7 @@ int p3()
 
 void p3_0(alg::Graph & g) {
 
+
     g.addEdge(1, 2);
     g.addEdge(1, 3);
     g.addEdge(2, 4);
@@ -170,7 +171,11 @@ void p3_0(alg::Graph & g) {
     g.addEdge(5, 7);
 
 
+    cout << "BSF" << endl;
     g.bfs(1, printer);
+
+    cout << "DSF" << endl;
+    g.dfs(1, printer);
 }
 
 
