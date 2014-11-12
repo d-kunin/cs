@@ -209,7 +209,9 @@ namespace alg
                 }
             }
 
-            visitor(toExtIndex(vertex), paths);
+            if (!visitor(toExtIndex(vertex), paths)) {
+                return;
+            }
         }
     }
 
@@ -246,7 +248,10 @@ namespace alg
 
             if (visited.find(vertex) == visited.end()) {
                 visited.insert(vertex);
-                visitor(toExtIndex(vertex), story);
+
+                if (!visitor(toExtIndex(vertex), story)) {
+                    return;
+                }
             }
         }
 
