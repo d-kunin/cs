@@ -1,9 +1,154 @@
 package dk.kunin;
 
+import com.beust.jcommander.internal.Lists;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class Main {
 
+    /**
+     * Implement prepare and isMember such that isMember will return true if the
+     * query matches a word in the list passed into prepare.
+     *
+     * The query string may include any number of "." characters which should match
+     * any single character.
+     *
+     * Examples:
+     * c.t matches cat and cot but not coat
+     * . matches any single character word such as a or i
+     * ... matches any three letter word
+     */
+
+    public static class SpellCheck {
+
+    final static char WILD_CARD = '.';
+    final WordsTree wordsIndex = new WordsTree();
+
+    static class Node {
+
+        final char value;
+        final boolean terminate;
+        final Map<Character, Node> children = new HashMap<>();
+
+        Node(char value, boolean terminate) {
+            this.value = value;
+            this.terminate = terminate;
+        }
+
+        Node add(char c, boolean terminate) {
+            Node n = children.get(c);
+            if (n == null) {
+                n = new Node(c, terminate);
+                children.put(c, n);
+            }
+            return n;
+        }
+
+
+        boolean findRec(String postfix) {
+                char c = postfix.charAt(0);
+
+                if (c == WILD_CARD) {
+
+                    // handle single '.'
+                    if (postfix.length() == 1) {
+                        // we just need any terminate-child
+                        for (Node child : children.values()) {
+                            if (child.terminate) {
+                                return true;
+                            }
+                            return false;
+                        }
+                    }
+
+                    boolean found = false;
+                    for (Node child : children.values()) {
+                        if (child.findRec(postfix.substring(1))) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    return found;
+
+
+                } else {
+
+                    Node n = children.get(c);
+                    if (n == null) {
+                        return false;
+                    }
+                    return postfix.length() == 1
+                            ? n.terminate
+                            : n.findRec(postfix.substring(1));
+                }
+        }
+    }
+
+
+        static class WordsTree {
+            Node root = new Node((char) 0, false);
+
+            void add(String word) {
+                Node n = root;
+                for (int i = 0; i < word.length() - 1; ++i) {
+                    char c = word.charAt(i);
+                    n = n.add(c, false);
+                }
+                n.add(word.charAt(word.length() - 1), true);
+            }
+
+            boolean find(String word) {
+                Node n = root;
+                return root.findRec(word);
+            }
+        }
+
+        public void prepare(List<String> words) {
+            for (String word : words)
+            {
+                wordsIndex.add(word);
+            }
+        }
+
+        public boolean isMember(String query) {
+            return wordsIndex.find(query);
+        }
+    }
+
     public static void main(String[] args) {
-	    SingleLinkedList list = new SingleLinkedList();
+        List<String> dict = Lists.newArrayList(
+                "car",
+                "cat",
+                "count",
+                "mate"
+        );
+
+        SpellCheck spellCheck = new SpellCheck();
+        spellCheck.prepare(dict);
+
+        List<String> tests = Lists.newArrayList(
+                "cat",
+                "car",
+                "count",
+                "c...t",
+                "ca",
+                "...",
+                "malina",
+                ".",
+                "ca.",
+                "made",
+                "m..e"
+        );
+
+        for (String t : tests) {
+            System.out.printf("%s : %b\n", t, spellCheck.isMember(t));
+        }
+    }
+
+    private static void temp() {
+        SingleLinkedList list = new SingleLinkedList();
         list.append(1);
         list.printList();
 
