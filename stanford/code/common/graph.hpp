@@ -56,10 +56,10 @@ namespace alg
     // Impl
 
     private:
-        vector< vector<size_t> > _adjacencyList;
-        vector<size_t> _degrees;
         size_t    _capacity;
         bool      _selfLoops;
+        vector< vector<size_t> > _adjacencyList;
+        vector<size_t>           _degrees;
 
         bool checkIndex(size_t v)
         {
@@ -90,9 +90,9 @@ namespace alg
 
     Graph::Graph(size_t numVertices, size_t selfLoops)
         : _capacity(numVertices)
+        , _selfLoops(selfLoops)
         , _adjacencyList(numVertices)
         , _degrees(numVertices)
-        , _selfLoops(selfLoops)
     {}
 
     void Graph::addEdge(size_t v1, size_t v2, bool bidirectional)
@@ -350,6 +350,40 @@ namespace alg
     {
         set<size_t> visited;
         vector<size_t> order(_capacity);
+        stack<size_t> s;
+        size_t currentLabel = _capacity;
+
+        for (auto vertex : coding::sequence<size_t>(0, _capacity))
+        {
+
+            if (visited.find(vertex) == visited.end())
+            {
+                s.push(vertex);
+                visited.insert(vertex);
+            }
+
+            while (!s.empty())
+            {
+                size_t currentVertex = s.top();
+                bool sink = true;
+
+                for (auto adjV : _adjacencyList[currentVertex])
+                {
+                    if (visited.find(adjV) == visited.end())
+                    {
+                        s.push(adjV);
+                        visited.insert(adjV);
+                        sink = false;
+                    }
+                }
+
+                if (sink)
+                {
+                    s.pop();
+                    order[--currentLabel] = toExtIndex(currentVertex);
+                }
+            }
+        }
 
         return order;
     }

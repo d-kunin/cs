@@ -176,6 +176,24 @@ void p3_0(alg::Graph & g) {
 
     cout << "DSF" << endl;
     g.dfs(1, printer);
+
+    cout << "Topological order" << endl;
+    g = alg::Graph(5 + 4);
+
+    // first
+    g.addEdge(1, 2, false);
+    g.addEdge(2, 4, false);
+    g.addEdge(2, 3, false);
+    g.addEdge(3, 5, false);
+
+    // second
+    g.addEdge(6, 7, false);
+    g.addEdge(6, 8, false);
+    g.addEdge(7, 9, false);
+    g.addEdge(8, 9, false);
+
+    auto order = g.topologicalOrder();
+    coding::printVector(order);
 }
 
 
