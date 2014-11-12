@@ -27,7 +27,7 @@ namespace alg
 
         Graph(size_t numVertices, size_t selfLoops = false);
 
-        void addEdge(size_t v1, size_t v2, bool both=true);
+        void addEdge(size_t v1, size_t v2, bool bidirectional = true);
         bool hasEdge(size_t v1, size_t v2);
         bool removeEdge(size_t v1, size_t v2);
         void merge(size_t v1, size_t v2);
@@ -35,6 +35,9 @@ namespace alg
         // Traverse
         void bfs(size_t v, VertexVisitor visitor);
         void dfs(size_t v, VertexVisitor visitor);
+
+
+        vector<size_t> topologicalOrder();
 
 
         // Stat
@@ -87,13 +90,12 @@ namespace alg
 
     Graph::Graph(size_t numVertices, size_t selfLoops)
         : _capacity(numVertices)
+        , _adjacencyList(numVertices)
+        , _degrees(numVertices)
         , _selfLoops(selfLoops)
-    {
-        _adjacencyList.resize(_capacity);
-        _degrees.resize(_capacity);
-    }
+    {}
 
-    void Graph::addEdge(size_t v1, size_t v2, bool both)
+    void Graph::addEdge(size_t v1, size_t v2, bool bidirectional)
     {
         assertIndex(v1);
         assertIndex(v2);
@@ -109,7 +111,7 @@ namespace alg
         _adjacencyList[v1].push_back(v2);
         ++_degrees[v1];
 
-        if (both)
+        if (bidirectional)
         {
             _adjacencyList[v2].push_back(v1);
             ++_degrees[v2];
@@ -178,8 +180,7 @@ namespace alg
 
         set<size_t> visited;
         queue<size_t> q;
-        vector< vector<size_t> > paths;
-        paths.resize(_capacity);
+        vector< vector<size_t> > paths(_capacity);
 
 
         visited.insert(v);
@@ -222,8 +223,7 @@ namespace alg
 
         set<size_t> visited;
         stack<size_t> s;
-        vector<vector<size_t>> story;
-        story.resize(_capacity);
+        vector<vector<size_t>> story(_capacity);
 
         visited.insert(v);
         s.push(v);
@@ -344,5 +344,13 @@ namespace alg
         }
 
         return minCut;
+    }
+
+    vector<size_t> Graph::topologicalOrder()
+    {
+        set<size_t> visited;
+        vector<size_t> order(_capacity);
+
+        return order;
     }
 }
