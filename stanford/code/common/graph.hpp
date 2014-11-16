@@ -410,7 +410,7 @@ namespace alg
         }
 
         _adjacencyList.assign(all(reversedAdj));
-        // TODO recalculate degrees
+        // TODO recalculate degrees?
     }
 
     vvst Graph::sccKosaraju()
@@ -418,22 +418,43 @@ namespace alg
         reverse();
 
         // create traverse vector
-        set<size_t> visited;
+        vst explored(_capacity);
         vst traverseOrder;
 
         for_range(0, _capacity, i)
         {
-            if (!present(visited, i))
+            if (explored[i] == 0)
             {
-                dfs(toExtIndex(i), [&] (size_t vrtx, vvst const & story)
+                stack<size_t> s;
+                s.push(i);
+                explored[i] = 1;
+
+                while (!s.empty())
                 {
-                    if (!present(visited, vrtx - 1))
+                    size_t v = s.top();
+                    s.pop();
+
+                    for (auto av : _adjacencyList[v])
                     {
-                        traverseOrder.pb(vrtx);
-                        visited.insert(vrtx - 1);
+                        if (explored[av] == 0)
+                        {
+                            s.push(av);
+                            explored[av] = 1;
+                        }
                     }
-                    return true;
-                });
+                    traverseOrder.pb(v + 1);
+                }
+
+//                // todo rewrite
+//                dfs(toExtIndex(i), [&] (size_t vrtx, vvst const & story)
+//                {
+//                    if (explored[vrtx - 1] == 0)
+//                    {
+//                        traverseOrder.pb(vrtx);
+//                        explored[vrtx - 1] = 1;
+//                    }
+//                    return true;
+//                });
 
             }
         }
@@ -444,17 +465,17 @@ namespace alg
 
         // traverse from the latest finishing time
         vvst sccs;
-        visited.clear();
+        std::fill(all(explored), 0);
 
         for (auto it = traverseOrder.rbegin(); it != traverseOrder.rend(); ++it)
         {
             size_t leader = *it;
-            if (!present(visited, leader)) {
+            if (explored[leader - 1] == 0) {
                 vst currentSCC;
 
                 stack<size_t> s;
                 s.push(leader);
-                visited.insert(leader);
+                explored[leader - 1] = 1;
 
                 while (!s.empty()) {
                     size_t v = s.top();
@@ -463,9 +484,9 @@ namespace alg
                     for (auto av : _adjacencyList[v - 1])
                     {
                         av = toExtIndex(av);
-                        if (!present(visited, av)) {
+                        if (explored[av - 1] == 0) {
                             s.push(av);
-                            visited.insert(av);
+                            explored[av - 1] = 1;
                         }
                     }
                     currentSCC.pb(v);

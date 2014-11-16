@@ -159,7 +159,8 @@ int p3()
     return 0;
 }
 
-void p3_0(alg::Graph & g) {
+void p3_0(alg::Graph & g)
+{
 
     g = alg::Graph(9);
 
@@ -184,6 +185,28 @@ void p3_0(alg::Graph & g) {
 
 }
 
+void p4()
+{
+    alg::Graph g(875714);
+    string filename = "SCC.txt";
+    ifstream in(filename);
+
+    cout << endl << "Start read..." << endl;
+    while (in)
+    {
+        size_t v1, v2;
+        in >> v1;
+        in >> v2;
+        g.addEdge(v1, v2, false);
+    }
+    cout << "End read!" << endl;
+
+    cout << "Running" << endl;
+    auto v = g.sccKosaraju();
+    cout << endl << "Done: " << v.size() << " SCCs found" << endl;
+}
+
+
 
 int main()
 {
@@ -193,6 +216,7 @@ int main()
 //    return p3();
     alg::Graph g(10);
     p3_0(g);
+    p4();
 
     return 0;
 }
