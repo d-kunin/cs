@@ -397,20 +397,18 @@ namespace alg
 
     void Graph::reverse()
     {
-        vvst reversedAdj(_capacity);
 
-        for (size_t i = 0; i < _capacity; ++i)
+        vvst reversedAdj(_capacity);
+        for (size_t i = 0; i < _adjacencyList.size(); ++i)
         {
-            size_t v1 = i;
             for (size_t j = 0; j < _adjacencyList[i].size(); ++j)
             {
-                size_t v2 = _adjacencyList[i][j];
+                size_t v1 = i;
+                size_t v2 = _adjacencyList[v1][j];
                 reversedAdj[v2].pb(v1);
             }
         }
-
         _adjacencyList.assign(all(reversedAdj));
-        // TODO recalculate degrees?
     }
 
     vvst Graph::sccKosaraju()
@@ -427,39 +425,25 @@ namespace alg
             {
                 stack<size_t> s;
                 s.push(i);
-                explored[i] = 1;
 
                 while (!s.empty())
                 {
                     size_t v = s.top();
                     s.pop();
 
-                    for (auto av : _adjacencyList[v])
+                    if (explored[v] == 0)
                     {
-                        if (explored[av] == 0)
+                        explored[v] = 1;
+                        traverseOrder.pb(v);
+                        for (auto av : _adjacencyList[v])
                         {
                             s.push(av);
-                            explored[av] = 1;
                         }
                     }
-                    traverseOrder.pb(v + 1);
                 }
-
-//                // todo rewrite
-//                dfs(toExtIndex(i), [&] (size_t vrtx, vvst const & story)
-//                {
-//                    if (explored[vrtx - 1] == 0)
-//                    {
-//                        traverseOrder.pb(vrtx);
-//                        explored[vrtx - 1] = 1;
-//                    }
-//                    return true;
-//                });
-
             }
         }
 
-        coding::printVector(traverseOrder);
         reverse();
 
 
@@ -470,32 +454,26 @@ namespace alg
         for (auto it = traverseOrder.rbegin(); it != traverseOrder.rend(); ++it)
         {
             size_t leader = *it;
-            if (explored[leader - 1] == 0) {
+            if (explored[leader] == 0) {
                 vst currentSCC;
 
                 stack<size_t> s;
                 s.push(leader);
-                explored[leader - 1] = 1;
 
                 while (!s.empty()) {
                     size_t v = s.top();
                     s.pop();
 
-                    for (auto av : _adjacencyList[v - 1])
+                    if (explored[v] == 0)
                     {
-                        av = toExtIndex(av);
-                        if (explored[av - 1] == 0) {
+                        explored[v] = 1;
+                        currentSCC.pb(v + 1);
+                        for (auto av : _adjacencyList[v])
+                        {
                             s.push(av);
-                            explored[av - 1] = 1;
                         }
                     }
-                    currentSCC.pb(v);
                 }
-
-
-                newline();
-                cout << "[" << currentSCC.size() << "] ";
-                coding::printVector(currentSCC);
                 sccs.pb(currentSCC);
             }
         }

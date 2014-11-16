@@ -159,10 +159,10 @@ int p3()
     return 0;
 }
 
-void p3_0(alg::Graph & g)
+void p3_0()
 {
 
-    g = alg::Graph(9);
+    alg::Graph g(9, true);
 
     // first
     g.addEdge(1, 7, false);
@@ -181,29 +181,62 @@ void p3_0(alg::Graph & g)
     g.addEdge(2, 5, false);
     g.addEdge(5, 8, false);
 
-    g.sccKosaraju();
+    auto v = g.sccKosaraju();
+
+    std::sort(v.begin(), v.end(),
+            [](vst const & a, vst const & b) {
+                return a.size() < b.size();
+            });
+
+    for (auto it = v.rbegin(); it != v.rbegin() + std::min((size_t)5, v.size()); ++it)
+    {
+        cout << "[" << it->size() << "] ";
+        std::sort(all(*it));
+        coding::printVector(*it);
+        newline();
+    }
 
 }
 
 void p4()
 {
-    alg::Graph g(875714);
+    alg::Graph g(875714, true);
     string filename = "SCC.txt";
     ifstream in(filename);
 
     cout << endl << "Start read..." << endl;
-    while (in)
+    size_t edgesRead = 0;
+
+    size_t v1, v2;
+    while (in >> v1 >> v2)
     {
-        size_t v1, v2;
-        in >> v1;
-        in >> v2;
+        ++edgesRead;
         g.addEdge(v1, v2, false);
     }
-    cout << "End read!" << endl;
+
+    cout << "End read: " << edgesRead << endl;
 
     cout << "Running" << endl;
     auto v = g.sccKosaraju();
     cout << endl << "Done: " << v.size() << " SCCs found" << endl;
+
+    std::sort(v.begin(), v.end(),
+            [](vst const & a, vst const & b) {
+                return a.size() < b.size();
+            });
+
+    for (auto it = v.rbegin(); it != v.rbegin() + std::min((size_t)5, v.size()); ++it)
+    {
+        cout << "[" << it->size() << "] ";
+        std::sort(all(*it));
+        coding::printVector(*it);
+        newline();
+    }
+
+    for (auto it = v.rbegin(); it != v.rbegin() + std::min((size_t)5, v.size()); ++it)
+    {
+        cout << it->size() << ",";
+    }
 }
 
 
@@ -214,8 +247,7 @@ int main()
 //    return p2();
 //    return qselect();
 //    return p3();
-    alg::Graph g(10);
-    p3_0(g);
+    p3_0();
     p4();
 
     return 0;
