@@ -6,6 +6,7 @@
 #include <set>
 #include <cassert>
 #include <iostream>
+#include <functional>
 
 using std::vector;
 using std::set;
@@ -23,7 +24,8 @@ namespace alg
     public:
 
         // Must return 'false' to stop traversal
-        typedef bool (*VertexVisitor)(size_t, vector<vector<size_t>> const & story);
+//        typedef bool (*VertexVisitor)(size_t, vvst const & story);
+        typedef std::function<bool (size_t, vvst const &)> VertexVisitor;
 
         Graph(size_t numVertices, size_t selfLoops = false);
 
@@ -32,9 +34,13 @@ namespace alg
         bool removeEdge(size_t v1, size_t v2);
         void merge(size_t v1, size_t v2);
 
+        void reverse();
+
         // Traverse
         void bfs(size_t v, VertexVisitor visitor);
-        void dfs(size_t v, VertexVisitor visitor);
+
+        template <typename Func>
+        void dfs(size_t v, Func visitor);
 
 
         vector<size_t> topologicalOrder();
@@ -51,6 +57,7 @@ namespace alg
 
         // Intel
         static size_t KargerMinCut(Graph const &input);
+        vvst sccKosaraju();
 
 
     // Impl
@@ -58,8 +65,8 @@ namespace alg
     private:
         size_t    _capacity;
         bool      _selfLoops;
-        vector< vector<size_t> > _adjacencyList;
-        vector<size_t>           _degrees;
+        vvst      _adjacencyList;
+        vst       _degrees;
 
         bool checkIndex(size_t v)
         {
@@ -216,16 +223,16 @@ namespace alg
         }
     }
 
-    void Graph::dfs(size_t v, VertexVisitor visitor) {
+    template <typename Func>
+    void Graph::dfs(size_t v, Func visitor) {
 
         checkIndex(v);
         v = toStoreIndex(v);
 
         set<size_t> visited;
         stack<size_t> s;
-        vector<vector<size_t>> story(_capacity);
+        vvst story(_capacity);
 
-        visited.insert(v);
         s.push(v);
 
         while (!s.empty())
@@ -386,5 +393,92 @@ namespace alg
         }
 
         return order;
+    }
+
+    void Graph::reverse()
+    {
+        vvst reversedAdj(_capacity);
+
+        for (size_t i = 0; i < _capacity; ++i)
+        {
+            size_t v1 = i;
+            for (size_t j = 0; j < _adjacencyList[i].size(); ++j)
+            {
+                size_t v2 = _adjacencyList[i][j];
+                reversedAdj[v2].pb(v1);
+            }
+        }
+
+        _adjacencyList.assign(all(reversedAdj));
+        // TODO recalculate degrees
+    }
+
+    vvst Graph::sccKosaraju()
+    {
+        reverse();
+
+        // create traverse vector
+        set<size_t> visited;
+        vst traverseOrder;
+
+        for_range(0, _capacity, i)
+        {
+            if (!present(visited, i))
+            {
+                dfs(toExtIndex(i), [&] (size_t vrtx, vvst const & story)
+                {
+                    if (!present(visited, vrtx - 1))
+                    {
+                        traverseOrder.pb(vrtx);
+                        visited.insert(vrtx - 1);
+                    }
+                    return true;
+                });
+
+            }
+        }
+
+        coding::printVector(traverseOrder);
+        reverse();
+
+
+        // traverse from the latest finishing time
+        vvst sccs;
+        visited.clear();
+
+        for (auto it = traverseOrder.rbegin(); it != traverseOrder.rend(); ++it)
+        {
+            size_t leader = *it;
+            if (!present(visited, leader)) {
+                vst currentSCC;
+
+                stack<size_t> s;
+                s.push(leader);
+                visited.insert(leader);
+
+                while (!s.empty()) {
+                    size_t v = s.top();
+                    s.pop();
+
+                    for (auto av : _adjacencyList[v - 1])
+                    {
+                        av = toExtIndex(av);
+                        if (!present(visited, av)) {
+                            s.push(av);
+                            visited.insert(av);
+                        }
+                    }
+                    currentSCC.pb(v);
+                }
+
+
+                newline();
+                cout << "[" << currentSCC.size() << "] ";
+                coding::printVector(currentSCC);
+                sccs.pb(currentSCC);
+            }
+        }
+
+        return sccs;
     }
 }

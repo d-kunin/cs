@@ -161,39 +161,27 @@ int p3()
 
 void p3_0(alg::Graph & g) {
 
-
-    g.addEdge(1, 2);
-    g.addEdge(1, 3);
-    g.addEdge(2, 4);
-    g.addEdge(2, 5);
-    g.addEdge(3, 4);
-    g.addEdge(3, 6);
-    g.addEdge(5, 7);
-
-
-    cout << "BSF" << endl;
-    g.bfs(1, printer);
-
-    cout << "DSF" << endl;
-    g.dfs(1, printer);
-
-    cout << "Topological order" << endl;
-    g = alg::Graph(5 + 4);
+    g = alg::Graph(9);
 
     // first
-    g.addEdge(1, 2, false);
-    g.addEdge(2, 4, false);
-    g.addEdge(2, 3, false);
-    g.addEdge(3, 5, false);
+    g.addEdge(1, 7, false);
+    g.addEdge(7, 4, false);
+    g.addEdge(4, 1, false);
+    g.addEdge(7, 9, false);
 
     // second
-    g.addEdge(6, 7, false);
+    g.addEdge(9, 6, false);
+    g.addEdge(6, 3, false);
+    g.addEdge(3, 9, false);
     g.addEdge(6, 8, false);
-    g.addEdge(7, 9, false);
-    g.addEdge(8, 9, false);
 
-    auto order = g.topologicalOrder();
-    coding::printVector(order);
+    // third
+    g.addEdge(8, 2, false);
+    g.addEdge(2, 5, false);
+    g.addEdge(5, 8, false);
+
+    g.sccKosaraju();
+
 }
 
 

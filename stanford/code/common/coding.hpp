@@ -9,6 +9,25 @@
 
 using namespace std;
 
+typedef vector<int> vi;
+typedef vector<vi> vvi;
+typedef pair<int,int> ii;
+
+typedef vector<size_t> vst;
+typedef vector<vst> vvst;
+typedef pair<size_t, size_t> stst;
+
+#define sz(a) size_t((a).size())
+#define pb push_back
+#define all(c) (c).begin(),(c).end()
+#define tr(c,i) for(auto i = (c).begin(); i != (c).end(); ++i)
+#define present(c,x) ((c).find(x) != (c).end())
+#define cpresent(c,x) (find(all(c),x) != (c).end())
+
+#define newline() cout << endl
+
+#define for_range(x,y,i) for(size_t i = (x); i < (y); ++i)
+
 namespace coding
 {
     template <typename T>
@@ -39,9 +58,7 @@ namespace coding
                 std::cout << *it << " ";
             }
         }
-
     }
-
 
     template <typename T>
     bool readVectorFromFile(string const & filename, vector<T> & output) {
