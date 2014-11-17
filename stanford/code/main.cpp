@@ -204,36 +204,20 @@ void p4()
     string filename = "SCC.txt";
     ifstream in(filename);
 
-    cout << endl << "Start read..." << endl;
-    size_t edgesRead = 0;
-
     size_t v1, v2;
     while (in >> v1 >> v2)
     {
-        ++edgesRead;
         g.addEdge(v1, v2, false);
     }
 
-    cout << "End read: " << edgesRead << endl;
+    auto sccs = g.sccKosaraju();
 
-    cout << "Running" << endl;
-    auto v = g.sccKosaraju();
-    cout << endl << "Done: " << v.size() << " SCCs found" << endl;
-
-    std::sort(v.begin(), v.end(),
+    std::sort(sccs.begin(), sccs.end(),
             [](vst const & a, vst const & b) {
                 return a.size() < b.size();
             });
 
-    for (auto it = v.rbegin(); it != v.rbegin() + std::min((size_t)5, v.size()); ++it)
-    {
-        cout << "[" << it->size() << "] ";
-        std::sort(all(*it));
-        coding::printVector(*it);
-        newline();
-    }
-
-    for (auto it = v.rbegin(); it != v.rbegin() + std::min((size_t)5, v.size()); ++it)
+    for (auto it = sccs.rbegin(); it != sccs.rbegin() + std::min((size_t)5, sccs.size()); ++it)
     {
         cout << it->size() << ",";
     }
@@ -247,8 +231,8 @@ int main()
 //    return p2();
 //    return qselect();
 //    return p3();
-    p3_0();
-    p4();
+//    p3_0();
+    timeof(p4(), "\nSolved in: ");
 
     return 0;
 }

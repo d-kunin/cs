@@ -88,6 +88,9 @@ namespace alg
             return v + 1;
         }
 
+
+        void dsf(vector<bool> & explored, vst & component, size_t v);
+
         friend std::ostream & operator<<(std::ostream &os, const Graph& g);
     };
 
@@ -411,69 +414,49 @@ namespace alg
         _adjacencyList.assign(all(reversedAdj));
     }
 
+    void Graph::dsf(vector<bool> & explored, vst & component, size_t v)
+    {
+        if (!explored[v]) {
+            explored[v] = true;
+            for (auto av : _adjacencyList[v])
+            {
+                if (!explored[av])
+                {
+                    dsf(explored, component, av);
+                }
+
+            }
+            component.pb(v);
+        }
+    }
+
     vvst Graph::sccKosaraju()
     {
-        reverse();
-
         // create traverse vector
-        vst explored(_capacity);
+        reverse();
+        vector<bool> explored(_capacity);
         vst traverseOrder;
-
-        for_range(0, _capacity, i)
+        for (int i = _capacity - 1; i >= 0; --i)
         {
-            if (explored[i] == 0)
+            if (!explored[i])
             {
-                stack<size_t> s;
-                s.push(i);
-
-                while (!s.empty())
-                {
-                    size_t v = s.top();
-                    s.pop();
-
-                    if (explored[v] == 0)
-                    {
-                        explored[v] = 1;
-                        traverseOrder.pb(v);
-                        for (auto av : _adjacencyList[v])
-                        {
-                            s.push(av);
-                        }
-                    }
-                }
+                dsf(explored, traverseOrder, i);
             }
         }
-
         reverse();
 
 
         // traverse from the latest finishing time
         vvst sccs;
-        std::fill(all(explored), 0);
+        std::fill(all(explored), false);
 
         for (auto it = traverseOrder.rbegin(); it != traverseOrder.rend(); ++it)
         {
-            size_t leader = *it;
-            if (explored[leader] == 0) {
+            size_t v = *it;
+            if (!explored[v])
+            {
                 vst currentSCC;
-
-                stack<size_t> s;
-                s.push(leader);
-
-                while (!s.empty()) {
-                    size_t v = s.top();
-                    s.pop();
-
-                    if (explored[v] == 0)
-                    {
-                        explored[v] = 1;
-                        currentSCC.pb(v + 1);
-                        for (auto av : _adjacencyList[v])
-                        {
-                            s.push(av);
-                        }
-                    }
-                }
+                dsf(explored, currentSCC, v);
                 sccs.pb(currentSCC);
             }
         }
