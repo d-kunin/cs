@@ -6,6 +6,7 @@
 #include <fstream>
 #include <vector>
 #include <assert.h>
+#include <chrono>
 
 using namespace std;
 
@@ -26,7 +27,14 @@ typedef pair<size_t, size_t> stst;
 
 #define newline() cout << endl
 
-#define for_range(x,y,i) for(size_t i = (x); i < (y); ++i)
+#define for_range(x,y,i) for(auto i = (x); i < (y); ++i)
+
+#define timeof(x, msg) do { \
+                          std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now(); \
+                          (x); \
+                          std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now(); \
+                          cout << msg << std::chrono::duration_cast<std::chrono::milliseconds>( t2 - t1 ).count() << endl; \
+                       } while (0)
 
 namespace coding
 {
@@ -43,19 +51,19 @@ namespace coding
 
         if (!ellipsize) {
             for (auto elem : v) {
-                std::cout << elem << " ";
+                cout << elem << " ";
             }
         } else {
             size_t part = maxLength/2;
             typedef typename vector<T>::const_iterator iter;
             for (iter it = v.begin(); it != (v.begin() + part); ++it)
             {
-                std::cout << *it << " ";
+                cout << *it << " ";
             }
-            std::cout << "... ";
+            cout << "... ";
             for (iter it = (v.end() - part); it != v.end(); ++it)
             {
-                std::cout << *it << " ";
+                cout << *it << " ";
             }
         }
     }
