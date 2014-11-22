@@ -226,24 +226,24 @@ void p4()
 
 void p_5()
 {
-    const string filename = "dD3.txt";
+    const string filename = "dijkstraData.txt";
     alg::vve g;
-    alg::readInput(filename, g, 15);
+    alg::readInput(filename, g, 200);
     vst paths;
-    alg::solve(g, paths, 14);
+    alg::solve(g, paths, 1);
     coding::printVector(paths);
     //7,37,59,82,99,115,133,165,188,197
-//    cout<< "\nSolution:\n"
-//        << paths[6] << ","
-//        << paths[36] << ","
-//        << paths[58] << ","
-//        << paths[81] << ","
-//        << paths[98] << ","
-//        << paths[114] << ","
-//        << paths[132] << ","
-//        << paths[164] << ","
-//        << paths[187] << ","
-//        << paths[196] << endl;
+    cout<< "\nSolution:\n"
+        << paths[6] << ","
+        << paths[36] << ","
+        << paths[58] << ","
+        << paths[81] << ","
+        << paths[98] << ","
+        << paths[114] << ","
+        << paths[132] << ","
+        << paths[164] << ","
+        << paths[187] << ","
+        << paths[196] << endl;
 }
 
 int main()
