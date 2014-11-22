@@ -10,6 +10,7 @@
 #include "common/quicksort.hpp"
 #include "common/quickselect.hpp"
 #include "common/graph.hpp"
+#include "common/dijkstra.hpp"
 
 void p3_0(alg::Graph & g);
 
@@ -223,7 +224,27 @@ void p4()
     }
 }
 
-
+void p_5()
+{
+    const string filename = "dD3.txt";
+    alg::vve g;
+    alg::readInput(filename, g, 15);
+    vst paths;
+    alg::solve(g, paths, 14);
+    coding::printVector(paths);
+    //7,37,59,82,99,115,133,165,188,197
+//    cout<< "\nSolution:\n"
+//        << paths[6] << ","
+//        << paths[36] << ","
+//        << paths[58] << ","
+//        << paths[81] << ","
+//        << paths[98] << ","
+//        << paths[114] << ","
+//        << paths[132] << ","
+//        << paths[164] << ","
+//        << paths[187] << ","
+//        << paths[196] << endl;
+}
 
 int main()
 {
@@ -232,7 +253,8 @@ int main()
 //    return qselect();
 //    return p3();
 //    p3_0();
-    timeof(p4(), "\nSolved in: ");
+//    timeof(p4(), "\nSolved in: ");
+    timeof(p_5(), "\n Solved in: ");
 
     return 0;
 }

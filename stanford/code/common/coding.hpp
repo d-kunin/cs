@@ -5,6 +5,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <set>
 #include <assert.h>
 #include <chrono>
 
@@ -17,6 +18,7 @@ typedef pair<int,int> ii;
 typedef vector<size_t> vst;
 typedef vector<vst> vvst;
 typedef pair<size_t, size_t> stst;
+typedef vector<string> vstr;
 
 #define sz(a) size_t((a).size())
 #define pb push_back
